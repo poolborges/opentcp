@@ -1,0 +1,92 @@
+/** \example main_demo.c
+ *
+ *	This is an example main.c file demonstrating basically two things:
+ *	initialization sequence and main loop organization.
+ *
+ *	\par Initialization sequence
+ *	When performing initialization, all OpenTCP initialization functions
+ *	must be invoked, starting from the lowest-level modules and continuing
+ *	upwards (because it may be assumed that higher-level modules might
+ *	already rely during their initialization on proper functioning of 
+ *	lower-level modules). Usual Initialization sequence looks something
+ *	like:
+ *		- hardware initialization
+ *		- timer pool initialization
+ *		- OpenTCP network layers initialization
+ *		- Application layer initialization
+ *
+ *	\par Main loop organization
+ *	In main program loop three things must be accomplished:
+ *		- constant checking of Ethernet controller for new Etherner
+ *		packets and, if new packets found, their further processing and in
+ *		the end discarding. Network buffer overflows must also be checked
+ *		periodically.
+ *		- Application layer main loop functions must be invoked to enable
+ *		their proper functioning
+ *		- OpenTCP network layer periodic functions must be invoked to
+ *		ensure proper resource management and behaviour.
+ *
+ *	More details about this example:
+ */
+ 
+/** \example tcp_client_demo.c
+ *
+ *	This is an example TCP application working as a client (meaning
+ *	application connects to remote hosts on the internet to exchange data
+ *	but does not accept independent connection requests from the network).
+ *
+ *	Basically all OpenTCP applications are divided in three separate
+ *	functions:
+ *		- app_init() - initialization part of the application where 
+ *		variables are initialized, system resources reserved, etc.
+ *		- app_run() - application main loop which is invoked from the 
+ *		main main loop. Here, event-based processingis performed where
+ *		upon certain event (timer expiration, communication event...)
+ *		data is usually sent from and/or other control functions are
+ *		invoked.
+ *		- app_event_listener - callback function invoked by the TCP/IP
+ *		stack on events (data arrival, connection state change...)
+ *	
+ *	More details about this example:
+ */
+ 
+/** \example tcp_server_demo.c
+ *
+ *	An example TCP application working as a server (waiting for an external
+ *	host to establish a connection and then exchanging some data with it).
+ *
+ *	Basically all OpenTCP applications are divided in three separate
+ *	functions:
+ *		- app_init() - initialization part of the application where 
+ *		variables are initialized, system resources reserved, etc.
+ *		- app_run() - application main loop which is invoked from the 
+ *		main main loop. Here, event-based processingis performed where
+ *		upon certain event (timer expiration, communication event...)
+ *		data is usually sent from and/or other control functions are
+ *		invoked.
+ *		- app_event_listener - callback function invoked by the TCP/IP
+ *		stack on events (data arrival, connection state change...)
+ *	
+ *	More details about this example:
+ */
+ 
+/** \example udp_demo.c
+ *
+ *	Small UDP application example showing possible organization of
+ *	applications using OpenTCP. 
+ *
+ *	Basically all OpenTCP applications are divided in three separate
+ *	functions:
+ *		- app_init() - initialization part of the application where 
+ *		variables are initialized, system resources reserved, etc.
+ *		- app_run() - application main loop which is invoked from the 
+ *		main main loop. Here, event-based processingis performed where
+ *		upon certain event (timer expiration, communication event...)
+ *		data is usually sent from and/or other control functions are
+ *		invoked.
+ *		- app_event_listener - callback function invoked by the TCP/IP
+ *		stack on data arrival events (for UDP only this event currently
+ *		exists)
+ *	
+ *	More details about this example:
+ */

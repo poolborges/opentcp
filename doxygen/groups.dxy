@@ -1,0 +1,55 @@
+/** \defgroup core_initializer Initialization functions
+ *
+ *	These are the functions that <b>MUST</b> be invoked at startup so
+ *	that appropriate modules can work properly. Failure to do so may
+ *	lead to difficult to find bugs and unexpected behaviour!
+ *
+ *	In general, all modules should be initialized starting from the
+ *	most basic ones upwards. See main_demo.c for an example startup
+ *	procedure.
+ */
+
+/** \defgroup periodic_functions Main loop functions
+ *
+ *	This is a group of functions invoked usually from main loop to 
+ *	perform period tasks for the TCP/IP stack and to manage data
+ *	processing. They are not part of the API functions, but they must
+ *	still be invoked by the user.
+ *
+ *	Not all of these functions must be invoked all the time in the
+ *	main loop. Certain functions are only invoked when it is needed (IP,
+ *	UDP and TCP processing for example). Check their individual
+ *	documentation for detailed instructions on how to use them.
+ */
+ 
+/** \defgroup udp_app_api UDP API functions
+ *
+ *	These are the functions that applications need to use in 
+ *	order to send/receive data using UDP as well as to work with
+ *	UDP sockets so as to achieve such a communication.
+ *
+ */
+ 
+/** \defgroup tcp_app_api TCP API functions
+ *
+ *	These are the functions that applications need to use in 
+ *	order to communicate using TCP as well as to work with TCP 
+ *	sockets so as to achieve such a communication.
+ */
+ 
+/**	\defgroup opentcp_example OpenTCP examples
+ *
+ *	These files offer some examples demonstrating basic structure and
+ *	operation of applications using OpenTCP to achieve Internet connectivity.
+ */
+ 
+/** \defgroup opentcp_config OpenTCP configuration parameters
+ *
+ *	A number of parameters in the files listed here, as well as #defines
+ *	mentioned here effect TCP/IP stacks' behaviour and/or runtime
+ *	system requirements (mostly the amount of needed memory).
+ *
+ *	By modifying these and adjusting them to your applications' requirements,
+ *	optimal application performance can be found for a given 
+ *	system constraints.
+ */

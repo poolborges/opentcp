@@ -1,0 +1,33 @@
+/** \mainpage OpenTCP API documentation
+ * 
+ *  \section intro Introduction to OpenTCP
+ *
+ *  OpenTCP is an Open Source project that brings a high-quality TCP/IP 
+ *	stack to embedded systems. Entirely written in C, it allows easy porting
+ *	to any existing microcontroller platform for which a C compiler 
+ *	is available.
+ *
+ *	\section licensing OpenTCP License information
+ *
+ *	Please visit following link for \ref license .
+ *	
+ *	Information about OpenTCP license may also be obtained by visiting 
+ *	http://www.opentcp.org/license.txt
+ *
+ *	\section contact Contact information
+ *
+ *	For latest information about the OpenTCP project please visit
+ *	http://www.opentcp.org
+ *
+ *	For information and contributions to OpenTCP development effort please
+ *	visit http://sourceforge.net/projects/opentcp
+ *
+ *	For information about ESERV modules, please contact sales@violasystems.com
+ *	
+ *	<hr>
+ *
+ *	Copyright (c) 2000-2002 Viola Systems Ltd. (http://www.violasystems.com)
+ * 
+ */
+ 
+ 
