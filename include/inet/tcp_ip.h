@@ -159,6 +159,15 @@
  */
 #define	TCP_DEF_RETRIES		7			
 
+/** \def TCP_CON_ATTEMTPS
+ *	\ingroup opentcp_config
+ *	\brief Number of connection-establishment attempts
+ *
+ *	This number defines how many times will TCP module try to connect
+ *	to the desired host.
+ */
+#define TCP_CON_ATTEMPTS	7
+
 /** \def TCP_DEF_KEEPALIVE
  *	\ingroup opentcp_config
  *	\brief Defines a number of  seconds after which an empty ACK packet is sent
@@ -177,7 +186,24 @@
  *	If data was not acknowledged during the time-frame defined by this
  *	value (in seconds) retransmission procedure will occur.
  */
-#define TCP_DEF_RETRY_TOUT	2
+#define TCP_DEF_RETRY_TOUT	4
+
+/** \def TCP_INIT_RETRY_TOUT
+ *	\ingroup opentcp_config
+ *	\brief Initial retransmission period (in seconds)
+ *
+ *	Initial retransmission is made a little faster, which helps with
+ *	connection establishment if ARP cache didn't contain remote IP address.
+ */
+#define TCP_INIT_RETRY_TOUT	1
+
+/** \def TCP_SYN_RETRY_TOUT
+ *	\ingroup opentcp_config
+ *	\brief Retranmission period for SYN packet
+ *
+ *	Controls SYN packet (segment) retransmit period.
+ */
+#define TCP_SYN_RETRY_TOUT	2
 
 /** \def TCP_TOS_NORMAL
  *	\brief Defines normal type of service for TCP socket

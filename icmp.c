@@ -100,8 +100,9 @@ INT16 process_icmp_in (struct ip_frame* frame, UINT16 len)
 	UINT8 code;
 	UINT16 checksum;
 	UINT16 i;
-	
-	
+	UINT16 j;
+	UINT8 tbuf[16];
+		
 	/* Is this ICMP?	*/
 	
 	ICMP_DEBUGOUT("Processing ICMP...\n\r");
@@ -114,12 +115,21 @@ INT16 process_icmp_in (struct ip_frame* frame, UINT16 len)
 	/* Calculate checksum for received packet	*/
 
 	checksum = 0;
-	i = 0;
+	i = len;
 	
 	NETWORK_RECEIVE_INITIALIZE(frame->buf_index);
 	
-	for(i=0; i < len; i++)
-		checksum = ip_checksum(checksum, RECEIVE_NETWORK_B(), (UINT8)i);
+	while(i>15){
+		
+		RECEIVE_NETWORK_BUF(tbuf, 16);	
+		
+		checksum = ip_checksum_buf(checksum, tbuf,16);
+		
+		i -= 16;	
+	}
+
+	for(j=0; j < i; j++)
+		checksum = ip_checksum(checksum, RECEIVE_NETWORK_B(), (UINT8)j);
 	
 	checksum = ~ checksum;
 	
@@ -160,7 +170,8 @@ INT16 process_icmp_in (struct ip_frame* frame, UINT16 len)
 				
 				ICMP_DEBUGOUT("PING with 102 bytes of data, getting temp. IP\r\n");			
 				localmachine.localip = frame->dip;
-				
+				localmachine.defgw = frame->sip;
+				localmachine.netmask = 0;
 			}
 			
 			
@@ -180,14 +191,14 @@ INT16 process_icmp_in (struct ip_frame* frame, UINT16 len)
 			
 			if(len > NETWORK_TX_BUFFER_SIZE)
 				len = NETWORK_TX_BUFFER_SIZE;
-
-			/* Calculate Checksum for packet to be sent	AND copy it to buffer*/
 			
-			checksum = ((UINT16)ICMP_ECHO_REPLY)<<8;
+			RECEIVE_NETWORK_BUF(&TXBUF[4], len);
 			
-			for(i=4; i<len; i++){
-				checksum = ip_checksum(checksum, TXBUF[i] = RECEIVE_NETWORK_B(), (UINT8)i);
-				}
+			/* Calculate Checksum for packet to be sent	*/
+			
+			checksum = 0;
+			
+			checksum = ip_checksum_buf(checksum, &TXBUF[0], len);
 	
 			checksum = ~ checksum;
 			

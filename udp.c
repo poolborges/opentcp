@@ -494,9 +494,8 @@ INT16 udp_send (INT8 sochandle, UINT32 remip, UINT16 remport, UINT8* buf, UINT16
 		buf = user_buf_start;
 		buf -= UDP_HLEN;
 	
-		for(i=0; i < (dlen + UDP_HLEN); i++)
-			cs = ip_checksum(cs, *buf++, cs_cnt++);
-	
+		cs = ip_checksum_buf(cs, buf, dlen + UDP_HLEN);
+			
 		cs = ~ cs;
 	
 		if(cs == 0)

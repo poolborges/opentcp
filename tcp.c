@@ -978,7 +978,11 @@ void tcp_poll (void)
 				/* Yep, timeout. Is there reties left?	*/
 				if( soc->retries_left ) {
 					soc->retries_left--;
-					init_timer(soc->retransmit_timerh, TCP_DEF_RETRY_TOUT*TIMERTIC);
+					if(soc->state == TCP_STATE_SYN_SENT)
+						init_timer(soc->retransmit_timerh, TCP_SYN_RETRY_TOUT*TIMERTIC);
+					else
+						init_timer(soc->retransmit_timerh, TCP_DEF_RETRY_TOUT*TIMERTIC);
+
 					tcp_sendcontrol(handle);
 					
 					handle++;
@@ -2200,9 +2204,8 @@ INT16 process_tcp_out (INT8 sockethandle, UINT8* buf, UINT16 blen, UINT16 dlen)
 	
 	buf = buf_start;
 	
-	for(i=0; i < (dlen + MIN_TCP_HLEN); i++)
-		cs = ip_checksum(cs, *buf++, cs_cnt++);
-	
+	cs = ip_checksum_buf(cs, buf, dlen + MIN_TCP_HLEN);
+		
 	cs = ~ cs;
 
 #if 0
@@ -2461,6 +2464,13 @@ void tcp_newstate (struct tcb* soc, UINT8 nstate)
 			soc->retries_left = 0;
 			break;
 		
+		case TCP_STATE_SYN_SENT:	
+			/* When we are sending SYN it's propably that ARP is not valid 	*/
+			/* Do retransmit faster on first time							*/
+			init_timer(soc->retransmit_timerh, TCP_INIT_RETRY_TOUT*TIMERTIC);
+			soc->retries_left = TCP_CON_ATTEMPTS;
+			break;
+
 		case TCP_STATE_LAST_ACK:
 		case TCP_STATE_FINW1:
 		case TCP_STATE_FINW2:
@@ -2583,9 +2593,18 @@ UINT8 tcp_check_cs (struct ip_frame* ipframe, UINT16 len)
 	cs = ip_checksum(cs, (UINT8)len, cs_cnt++);
 	
 	/* Go to TCP data	*/
+	while(len>15)
+	{		
+		RECEIVE_NETWORK_BUF(tcp_tempbuf,16);	
+		
+		cs = ip_checksum_buf(cs, tcp_tempbuf,16);
+		len -= 16;	
+		cs_cnt += 16;
+	}
 	
-	for(i=0; i < len; i++)
+	while(len--){
 		cs = ip_checksum(cs, RECEIVE_NETWORK_B(), cs_cnt++);
+	}
 	
 	cs = ~ cs;
 	

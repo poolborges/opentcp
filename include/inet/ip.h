@@ -135,6 +135,7 @@ INT16 process_ip_in(struct ethernet_frame*);
 INT16 process_ip_out(UINT32, UINT8, UINT8, UINT8, UINT8*, UINT16);
 UINT8 ip_check_cs(struct ip_frame*);
 UINT16 ip_checksum(UINT16, UINT8, UINT8);
+UINT32 ip_checksum_buf (UINT16 cs, UINT8* buf, UINT16 len);
 UINT32 ip_construct_cs(struct ip_frame*);
 
 #endif

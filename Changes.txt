@@ -1,7 +1,19 @@
 Recent changes:
+03.08.2003
+	OpenTCP version 1.0.4
+	- added Jari's changes to checksum calculation
+	- TCP module also modified so to improve performance with ARP cache
+	mismatches
+
+20.07.2003
+	- added Jari's modifications to ethernet.c for reading&writing
+	buffers from&to ethernet controller
+	- IOCHRDY is now handled correctly in ethernet.c
+	
 16.06.2003
 	- fixed Ethernet.c so that data direction registers are not set
 	up with #defines but with literasls.
+	
 11.06.2003
 	- fixed all possible problems with shifting (dns.c, ip.c)
 	- fixed some flaws in DHCP client 

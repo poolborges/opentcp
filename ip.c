@@ -392,10 +392,8 @@ INT16 process_ip_out (UINT32 ipadr, UINT8 pcol, UINT8 tos, UINT8 ttl, UINT8* dat
 	
 	/* Assemble data	*/
 	
-	for(i=0; i<len; i++) {		
-		SEND_NETWORK_B(*dat++);
-		}
-	
+	SEND_NETWORK_BUF(dat,len);
+		
 	/* Launch it		*/
 	
 	NETWORK_COMPLETE_SEND( send_ip_packet.tlen );
@@ -565,6 +563,45 @@ UINT16 ip_checksum (UINT16 cs, UINT8 dat, UINT8 count)
 	}
 
 	return( ( (UINT16)cs_h << 8 ) + cs_l);
+
+}
+
+
+/** \brief Used for constructuing IP checksum of a data buffer
+ * 	\author 
+ *		\li Jari Lahti
+ *	\date 03.08.2003
+ *	\param cs last checksum value
+ *	\param buf buffer who's checksum we're calculating
+ *	\param len length of data in buffer
+ *	\return new checksum value
+ *
+ *	Calculates checksum of the data in buffer and returns new
+ *	checksum value.
+ */
+UINT32 ip_checksum_buf (UINT16 cs, UINT8* buf, UINT16 len)
+{
+	UINT16 dat;
+	UINT32 temp;
+	
+	temp = cs;
+	
+	while(len>1)
+	{
+		len -= 2;
+		dat = *buf++;
+		dat <<= 8;
+		dat |= *buf++;
+		temp += dat;
+	}
+	
+	temp = (temp >> 16) + (temp & 0xFFFF);	/* Add in carry		*/
+	temp += (temp >>16);					/* Maybe one more	*/
+	
+	if(len)
+		temp = ip_checksum(temp, *buf, 0);
+	
+	return( (UINT16) temp );
 
 }
 

@@ -62,7 +62,6 @@
  *	\warning
  *	\todo
  *		\li How to adopt to different MCU speeds in the code?
- *		\li NE2000DMAInit ??? What is it used for?
  *  
  *	OpenTCP implementation of Ethernet protocol and driver for
  *	Realtek's RTL8019AS Ethernet controller. Function declarations,data
@@ -127,9 +126,8 @@ void outNE2000 (UINT8 reg , UINT8 dat)
  	
  	/* Wait until bus free */
  	
- 	while(IOCHRDY == 0);
- 	
  	IOW = 0;					/* do writestrobe */
+ 	while(IOCHRDY == 0);
  	IOW = 1;
 
 }	
@@ -142,7 +140,7 @@ void outNE2000 (UINT8 reg , UINT8 dat)
  *
  *	Invoke this function to write data to the same register as 
  *	in previously invoked outNE2000(). Saves some cycles because
- *	data direction registers and address are not set up.
+ *	data direction registers and address are set up.
  *
  *	Use SEND_NETWORK_B() macro instead of invoking this function
  *	directly.
@@ -154,13 +152,38 @@ void outNE2000again (UINT8 dat)
  	DATABUS = dat;
  	
  	/* Wait until bus free */
- 	
+
+	IOW = 0;				/* do writestrobe */
  	while(IOCHRDY == 0);
- 	
- 	IOW = 0;				/* do writestrobe */
  	IOW = 1;
- 
 }
+
+/** \brief Write buffer data to the same NE2000 register as before
+ * 	\author 
+ *		\li Jari Lahti (jari.lahti@violasystems.com)
+ *	\date 20.07.2003
+ *	\param buf pointer to buffer from which we're taking data
+ *	\param len number of bytes from buffer to write
+ *
+ *	Invoke this function to write data from a buffer to the same 
+ *	register as in previously invoked outNE2000(). Saves some 
+ *	cycles because data direction registers and address are set up.
+ *
+ *	Use SEND_NETWORK_BUF() macro instead of invoking this function
+ *	directly.
+ */
+void outNE2000againbuf (UINT8* buf, UINT16 len)
+{
+
+	while(len--)
+	{
+		DATABUS = *buf++;
+		IOW = 0;
+		while(IOCHRDY == 0);		/* Wait until bus free */
+		IOW = 1;
+	}
+}
+
 
 /** \brief Read byte from NE2000 register
  * 	\author 
@@ -180,9 +203,8 @@ UINT8 inNE2000 (UINT8 reg)
  	
  	/* Wait until bus free */
  	
- 	while(IOCHRDY == 0);
- 	
  	IOR = 0;					/* do readstrobe */
+ 	while(IOCHRDY == 0);
  	temp = DATABUS;
  	IOR = 1;
  	
@@ -206,15 +228,36 @@ UINT8 inNE2000again (void)
  	UINT8 temp;
  	
  	/* Wait until bus free */
- 	
+
+ 	IOR = 0; 	
  	while(IOCHRDY == 0);
- 	
- 	IOR = 0;
  	temp = DATABUS;
  	IOR = 1;
  	
  	return(temp);
  
+}
+
+/** \brief Read bytes from NE2000 to buffer
+ * 	\author 
+ *		\li Jari Lahti (jari.lahti@violasystems.com)
+ *	\date 20.07.2003
+ *
+ *	Invoke this function to continue reading contents of a NE2000 register,
+ *	only this time to a buffer directly.
+ *
+ *	Use RECEIVE_NETWORK_BUF() macro instead of directly invoking this
+ *	function for easier driver change.
+ */
+void inNE2000againbuf (UINT8* buf, UINT16 len)
+{
+	while(len--)
+	{
+		IOR = 0;
+		while(IOCHRDY == 0);		/* Wait until bus free */ 				
+ 		*buf++ = DATABUS;
+ 		IOR = 1;	
+	}
 }
 
 /** \brief Check to see if new frame has been received

@@ -617,7 +617,8 @@ INT8 arp_add (UINT32 pra, UINT8* hwadr, UINT8 type)
 
 	return(1);
 
-} 
+}
+ 
 /** \brief Find an ARP entry given a protocol address
  * 	\author 
  *		\li Jari Lahti (jari.lahti@violasystems.com)
@@ -765,6 +766,7 @@ struct arp_entry* arp_find (LWORD pra, struct netif *machine, UINT8 type)
 
 	
 }
+
 
 /** \brief Manage ARP cache periodically
  *	\ingroup periodic_functions

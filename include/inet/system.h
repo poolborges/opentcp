@@ -72,7 +72,7 @@
  *	This define represents OpenTCP version information. Version
  *	is in the format MAJOR.MINOR.PATCH.
  */
-#define OPENTCP_VERSION	"1.0.3"
+#define OPENTCP_VERSION	"1.0.4"
 
 /* Boolean	values*/
 #define TRUE  1	/**< Boolean TRUE value as used in the OpenTCP */
@@ -209,6 +209,16 @@ struct netif{
  */
 #define RECEIVE_NETWORK_B()				inNE2000again()
 
+/** \def RECEIVE_NETWORK_BUF
+ *	\brief Use this macro to read data from Ethernet controller to a buffer
+ *
+ *	This macro should be used to read data from the Ethernet
+ *	controller to a buffer in memory. Procedure for using this macro
+ * is the same as for using RECEIVE_NETWORK_B() macro.
+ *
+ */
+#define RECEIVE_NETWORK_BUF(c,d)		inNE2000againbuf(c,d)
+
 /** \def SEND_NETWORK_B
  *	\brief Use this macro to write data to Ethernet controller
  *
@@ -228,6 +238,14 @@ struct netif{
  *
  */
 #define SEND_NETWORK_B(c) 				outNE2000again(c)
+
+/** \def SEND_NETWORK_BUF
+ *	\brief Use this macro to write data from buffer to Ethernet controller
+ *
+ *	This macro should be used to write data from a buffer to Ethernet
+ *	controller. Usage is the same as for the SEND_NETWORK_B() macro.
+ */
+#define SEND_NETWORK_BUF(c,d)			outNE2000againbuf(c,d)
 
 /** \def NETWORK_CHECK_IF_RECEIVED
  *	\ingroup periodic_functions
