@@ -63,6 +63,8 @@
 #ifndef INCLUDE_HTTP_SERVER_H
 #define INCLUDE_HTTP_SERVER_H
 
+#include <inet/datatypes.h>
+
 /**	\def NO_OF_HTTP_SESSIONS
  *	\brief Defines number of simultaneous HTTP sessions
  *

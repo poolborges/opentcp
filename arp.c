@@ -62,14 +62,11 @@
  *	\warning
  *	\todo
  *		\li Offer direct control over ARP (needed in future for DHCP)
- * 		\li It seems that from previous versions there is old code
- *		that checks return values from arp_alloc that used to return
- *		-1 when there were no entries left. This doesn't happen in this
- *		implementation so it is not needed.
  *
  *	OpenTCP ARP protocol implementation. Function declarations
  *	can be found in inet/arp.h.
  */
+#include <inet/datatypes.h>
 #include <inet/debug.h>
 #include <inet/ethernet.h>
 #include <inet/arp.h>
@@ -132,7 +129,7 @@ UINT8 process_arp (struct ethernet_frame* frame) {
 		if( frame->frame_size < (2*MAXHWALEN + 2*MAXPRALEN + 2 + 6) ) {
 			/* Somehow corrupted ARP packet	*/
 			ARP_DEBUGOUT("Corrupted ARP packet\n\r");
-			NETWORK_RECEIVE_END();
+			/*NETWORK_RECEIVE_END();*/
 			return(TRUE);
 		}
 			 
@@ -163,7 +160,7 @@ UINT8 process_arp (struct ethernet_frame* frame) {
 		
 		}
 		
-		NETWORK_RECEIVE_END();
+		/*NETWORK_RECEIVE_END();*/
 		return(TRUE);
 		
 	}
@@ -192,8 +189,8 @@ void arp_send_response(void)
 {
 	struct arp_entry *qstruct;
 	UINT8 rem_hwadr[MAXHWALEN];
-	LWORD rem_ip;
-	LWORD ltemp;
+	UINT32 rem_ip;
+	UINT32 ltemp;
 	INT8 i;
 	BYTE j;
 
@@ -469,51 +466,70 @@ void arp_send_req (UINT8 entry)
 INT8 arp_alloc (UINT8 type)
 {
 	struct arp_entry *qstruct;
-	char i;
-	static BYTE aenext = 0;		/* Cache Manager	*/
+	INT8 i;
+	static BYTE aenext = 1;		/* Cache Manager	*/
+	INT16 found;
 	
-	
+	/* try to find free entry */
+	found=-1;
+
 	for( i=0; i<ARP_TSIZE; i++ ) {
 	
 		if( arp_table[aenext].state == ARP_FREE ) {
-			i = aenext;
+			found=i;
 			break;
 		}
-		
-		/* Move to next entry */
+	}
+	
+	if(found != (-1) ) {
+		qstruct = &arp_table[found];
+		qstruct->state = ARP_RESERVED;
+		qstruct->type = type;	
+		return( (UINT8)found );
+	}
+
+
+	/* if no success, try ro find first temporary entry	*/
+	/* on round-robin fashion							*/
+	
+
+	for( i=0; i<ARP_TSIZE; i++ ) {	
+		if( arp_table[aenext].type == ARP_TEMP_IP) {
+			found = aenext;			
+			break;
+		}
 			
+		/* Move to next entry */
+	
 		aenext = (aenext + 1);
 		if( aenext >= ARP_TSIZE )
 			aenext = 1;
-		
+			
 	}
-#if	DEBUG == 1
-	ARP_DEBUGOUT("Found an entry - ");	
-			if(aenext==0){
-				ARP_DEBUGOUT("Allocated Entry 0\n\r");
-			}
-			if(aenext==1){
-				ARP_DEBUGOUT("Allocated Entry 1\n\r");
-			}
-			
-			if(aenext==2){
-				ARP_DEBUGOUT("Allocated Entry 2\n\r");	
-			}
-			
-#endif
-
-	qstruct = &arp_table[aenext];
+	
+	
+	/* Was there free or temporary entries?	*/
+	
+	if( found == (-1) )
+		return(-1);
+		
+	/* Next time start from next entry	*/
 	
 	aenext = (aenext + 1);	
 	if( aenext >= ARP_TSIZE )
-		aenext = 1;
+		aenext = 1;		
+
+	qstruct = &arp_table[found];
 	
 	/* Set ARP initial parameters	*/
 	
 	qstruct->state = ARP_RESERVED;
 	qstruct->type = type;
 	
-	return(i);
+	/* Was return(i)!!! <-wrong!!	*/
+	
+	return((UINT8)found);
+
 
 }
 /** \brief Add given IP address and MAC address to ARP cache
@@ -536,8 +552,8 @@ INT8 arp_alloc (UINT8 type)
 INT8 arp_add (UINT32 pra, UINT8* hwadr, UINT8 type)
 {
 	struct arp_entry *qstruct;
-	UINT8 i;
-	UINT8 j;
+	INT8 i;
+	INT8 j;
 
 	for( i=0; i<ARP_TSIZE; i++ ) {
 		qstruct = &arp_table[i];
@@ -545,7 +561,7 @@ INT8 arp_add (UINT32 pra, UINT8* hwadr, UINT8 type)
 		if( qstruct->state == ARP_FREE )
 			continue;
 			
-		if( qstruct->pradr == pra) {
+		if((qstruct->pradr == pra)&&(pra != IP_BROADCAST_ADDRESS)) {
 			/* The address is in cache, refresh it	 */
 			
 			ARP_DEBUGOUT(" Refreshing Existing ARP Entry..\n\r");
@@ -622,7 +638,7 @@ INT8 arp_add (UINT32 pra, UINT8* hwadr, UINT8 type)
 struct arp_entry* arp_find (LWORD pra, struct netif *machine, UINT8 type)
 {
 	struct arp_entry *qstruct;
-	char i;
+	INT8 i;
 	
 	ARP_DEBUGOUT("Trying to find MAC address from ARP Cache\n\r");
 	
@@ -656,6 +672,11 @@ struct arp_entry* arp_find (LWORD pra, struct netif *machine, UINT8 type)
 		
 		ARP_DEBUGOUT("Need to send ARP Request to local network..\n\r");
 		
+		if( machine->defgw == pra ) {
+			if(machine->defgw != 0) {
+				type = ARP_FIXED_IP;
+			}
+		}
 		i = arp_alloc(type);
 		
 		if( i < 0 )				/* No Entries Left?	*/
@@ -680,17 +701,17 @@ struct arp_entry* arp_find (LWORD pra, struct netif *machine, UINT8 type)
 		return(0);
 	
 	} 
+
+	/* The Address belongst to the outern world, need to use MAC of			*/
+	/* Default Gateway														*/
+	
+	ARP_DEBUGOUT("Need to use MAC of Default GW\n\r");
 	
 	/* Check for Broadcast													*/
 	
 	if(machine->defgw == 0)				/* It's not specified	*/
 		return(0);
 	
-	/* The Address belongst to the outern world, need to use MAC of			*/
-	/* Default Gateway														*/
-	
-
-	ARP_DEBUGOUT("Need to use MAC of Default GW\n\r");
 	
 	for( i=0; i<ARP_TSIZE; i++ ) {
 		qstruct = &arp_table[i];
@@ -762,7 +783,8 @@ struct arp_entry* arp_find (LWORD pra, struct netif *machine, UINT8 type)
 void arp_manage (void)
 {
 	struct arp_entry *qstruct;
-	UINT8 i;
+	UINT8 i,j;
+	static UINT8 aenext=0;
 	
 	/* Check Timer before entering	*/
 	
@@ -771,12 +793,20 @@ void arp_manage (void)
 		
 	init_timer( arp_timer, ARP_MANG_TOUT*TIMERTIC);
 	
-	/* ARP_DEBUGOUT("Managing ARP Cache\n\r"); */
+	/* DEBUGOUT("Managing ARP Cache\n\r"); */
 	
 	for( i=0; i<ARP_TSIZE; i++ ) {
-		/* ARP_DEBUGOUT("."); */
+		/* DEBUGOUT("."); */
 	
-		qstruct = &arp_table[i];
+		qstruct = &arp_table[aenext];
+		
+		j = aenext;
+		
+		/* Take next entry next time	*/
+				
+		aenext++;
+		if(aenext >= ARP_TSIZE)
+			aenext = 0;	
 	
 		if( qstruct->state == ARP_FREE )
 			continue;
@@ -785,14 +815,14 @@ void arp_manage (void)
 			
 		if( qstruct->ttl > 0 )				/* Aging		*/
 			qstruct->ttl --;
-
-		/* Timed Out?	*/
-		if( qstruct->ttl == 0 )	{
+		
+		if( qstruct->ttl == 0 )	{			/* Timed Out?	*/
 			/* Do it for temporay entries	*/
 			
 			ARP_DEBUGOUT("Found Timed out Entry..\n\r");
 		
 			if( qstruct->type == ARP_TEMP_IP ) {
+
 				/* Release it?	*/
 				if( qstruct->state == ARP_RESOLVED ) {	
 					ARP_DEBUGOUT("Releasing ARP Entry..\n\r");
@@ -816,10 +846,10 @@ void arp_manage (void)
 				ARP_DEBUGOUT("Trying to Resolve dynamic ARP Entry..\n\r");
 			
 				qstruct->ttl = ARP_RESEND;
-				arp_send_req( i );
-				qstruct->state = ARP_PENDING;				/* Waiting for Reply	*/
+				arp_send_req( j );
+				qstruct->state = ARP_PENDING;				/* Waiting for Reply	*/			
 				
-				continue;
+				return;
 			
 			}
 		
@@ -831,14 +861,13 @@ void arp_manage (void)
 				
 				/* Do not try to refresh broadcast	*/
 				
-				if(qstruct->pradr == IP_BROADCAST_ADDRESS)
-				{
+				if(qstruct->pradr == IP_BROADCAST_ADDRESS) 	{
 					qstruct->ttl = ARP_TIMEOUT;
 					continue;
 				}
 				
 				ARP_DEBUGOUT("Refreshing Static ARP Entry..\n\r");
-			
+				
 				if( qstruct->retries > 0 )	
 					qstruct->retries--;
 				
@@ -848,9 +877,10 @@ void arp_manage (void)
 					qstruct->state = ARP_REFRESHING;
 			
 				qstruct->ttl = ARP_RESEND;
-				arp_send_req( i );
 				
-				continue;
+				arp_send_req( j );
+				
+				return;
 			
 			}
 		

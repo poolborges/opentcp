@@ -167,7 +167,16 @@ void https_run (void)
 		
 		if(ses >= NO_OF_HTTP_SESSIONS)
 			ses = 0;
-	
+
+		/* Keep sockets listening	*/
+		
+		if(tcp_getstate(https[ses].ownersocket) < TCP_STATE_LISTENING)
+		{
+			tcp_listen(https[ses].ownersocket, HTTPS_SERVERPORT);
+			ses++;
+			continue;	
+		}
+
 		if(https[ses].state != HTTPS_STATE_ACTIVE)
 		{
 			ses++;

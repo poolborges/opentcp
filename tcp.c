@@ -287,7 +287,7 @@ INT8 tcp_releasesocket (INT8 sochandle)
  *	put to listening mode and corresponding tcb entry is initialized.
  *
  */
-INT8 tcp_listen (UINT8 sochandle, UINT16 port)
+INT8 tcp_listen (INT8 sochandle, UINT16 port)
 {
 	struct tcb* soc;
 
@@ -374,7 +374,7 @@ INT8 tcp_listen (UINT8 sochandle, UINT16 port)
  *	will make some basic checks and if everything is OK, corresponding tcb
  *	socket entry will be initialized and connection procedure started.
  */
-INT8 tcp_connect (UINT8 sochandle, UINT32 ip, UINT16 rport, UINT16 myport )
+INT8 tcp_connect (INT8 sochandle, UINT32 ip, UINT16 rport, UINT16 myport )
 {
 	struct tcb* soc;
 	
@@ -546,7 +546,7 @@ INT16 tcp_send (INT8 sockethandle, UINT8* buf, UINT16 blen, UINT16 dlen)
  *	time for that to happen. Event_listener function will be invoked with 
  *	appropriate event when that really happens.
  */
-INT8 tcp_close (UINT8 sochandle)
+INT8 tcp_close (INT8 sochandle)
 {
 	struct tcb* soc;
 	
@@ -645,7 +645,7 @@ INT8 tcp_close (UINT8 sochandle)
  *	Use this function for querying socket state. This is usually not needed
  *	directly, but could be usefull for some special purposes.
  */
-INT8 tcp_getstate (UINT8 sochandle)
+INT8 tcp_getstate (INT8 sochandle)
 {
 	struct tcb* soc;
 
@@ -687,7 +687,7 @@ INT8 tcp_getstate (UINT8 sochandle)
  *	data or not. This may, sometimes, be preffered way of getting this type
  *	of information to waiting for #TCP_EVENT_ACK in event_listener function.
  */
-INT16 tcp_checksend (UINT8 sochandle)
+INT16 tcp_checksend (INT8 sochandle)
 {
 	struct tcb* soc;
 
@@ -733,7 +733,7 @@ INT16 tcp_checksend (UINT8 sochandle)
  *	tcp_abort should be used only in cases when it is really necessary to 
  *	immediately and quickly close the connection.
  */
-INT8 tcp_abort (UINT8 sochandle)
+INT8 tcp_abort (INT8 sochandle)
 {
 	struct tcb* soc;
 	
@@ -2247,7 +2247,7 @@ INT16 process_tcp_out (INT8 sockethandle, UINT8* buf, UINT16 blen, UINT16 dlen)
  *	numbers they carry.
  *
  */
-void tcp_sendcontrol (UINT8 sockethandle)
+void tcp_sendcontrol (INT8 sockethandle)
 {
 	UINT8 i;
 
@@ -2458,14 +2458,14 @@ void tcp_newstate (struct tcb* soc, UINT8 nstate)
 	
 	switch(soc->state) {
 		case TCP_STATE_TIMED_WAIT:
-			soc->retries_left = 1;
+			soc->retries_left = 0;
 			break;
 		
 		case TCP_STATE_LAST_ACK:
 		case TCP_STATE_FINW1:
 		case TCP_STATE_FINW2:
 		case TCP_STATE_CLOSING:
-			soc->retries_left = 3;
+			soc->retries_left = 1;
 			break;
 		
 		default:

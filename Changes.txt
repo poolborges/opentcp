@@ -1,5 +1,23 @@
 Recent changes:
 
+12.03.2003
+	OpenTCP version 1.0.2
+	- several include file dependency problems solved (everything?)
+	  
+06.03.2003
+	- Jari's changes to RTL8019AS Ethernet driver added. They prevent
+	  RTL8019's blocking under heavy network traffic.
+	- Few bugs in ARP module fixed
+	
+04.03.2003
+	- Incorrect sochandle definitions in tcp.c fixed
+	- strlen bug in system.c fixed
+
+03.02.2003
+	- fixed an error with incorrect comparison in dns.c
+	- for loop in bootp.c modified slightly so it compiles with
+	  all C compilers
+
 25.01.2003
 	OpenTCP version 1.0.1
 	- some erorrs in documentation regarding TCP timeout values were fixed

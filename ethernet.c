@@ -240,12 +240,14 @@ UINT8 NE2000CheckRxFrame (void)
  	
  	if( temp != inNE2000( BOUNDARY ) ) {
  		/* Boundary != Current => packet exists */
- 
- 		return(TRUE);
+ 		
+		/* Check still for receive status	*/
+ 		if(inNE2000(RCR) & 0x01)
+ 			return(TRUE);
+
  	}	
- 	
- 	return(FALSE);
- 
+	
+ 	return(FALSE); 
 }
 
 /** \brief Discard current received frame
@@ -312,6 +314,8 @@ void NE2000Init (UINT8* mac)
 	outNE2000( PAR0, *mac); 
 	
  	outNE2000( CURR, RXBUF_START );	/* Current address */
+ 	NE2000NextPktPtr = RXBUF_START;
+ 	NE2000CurrPktPtr = RXBUF_START;
  	
  	/* Goto page 0 and set registers */
  	
@@ -320,7 +324,7 @@ void NE2000Init (UINT8* mac)
  	outNE2000( PSTOP, RXBUF_END );	 		/* Rx buffer end address */
  	outNE2000( BOUNDARY, RXBUF_START );	 	/* Boundary */
  	outNE2000( ISR, 0xFF );			 		/* Interrupt services */
- 	outNE2000( RCR, 0xD6);			 		/* Rx config (Accept all), was C4 */
+ 	outNE2000( RCR, 0xC4);			 		/* Rx config (Accept all), was C4 */
  	outNE2000( TCR, 0xE0);			 		/* Tx config */
  	outNE2000( DCR, 0xB8);			 		/* Dataconfig */
  	
@@ -378,7 +382,30 @@ void NE2000CheckOverFlow (void)
  	
  		/* Remove Packet from buffer */
 	
-		NE2000DumpRxFrame();
+		if(inNE2000(BOUNDARY) != NE2000NextPktPtr) {
+ 			ETH_DEBUGOUT("\r\n*********Normal Overflow**********\r\n");
+ 			outNE2000( BOUNDARY, NE2000NextPktPtr );
+ 		} else {
+ 			/* There has been an overflow after we have received the packet	*/
+ 			/* last time													*/
+ 		
+ 			ETH_DEBUGOUT("???????????????????????????????????\r\n");
+ 			ETH_DEBUGOUT("Unrecognized overflow!!\r\n");
+ 			ETH_DEBUGOUT("中中中中中中中中中中中中中中中中中么r\n");
+ 		
+ 			outNE2000(CR ,0x62);			/* page 1, abort DMA */
+ 			temp = inNE2000(CURR);
+ 			outNE2000( CR, 0x22 );			/* page0, abort DMA */
+ 		
+ 			/* Dischard the whole buffer	*/
+ 		
+ 			outNE2000( BOUNDARY, temp);
+ 			
+ 			NE2000NextPktPtr = temp;
+ 			NE2000CurrPktPtr = temp; 			
+ 		
+ 		}
+ 
 		
 		outNE2000( ISR, 0xFF );			 /* Interrupt services */
 	

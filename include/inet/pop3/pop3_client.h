@@ -64,6 +64,7 @@
 #ifndef INCLUDE_POP3_CLIENT_H
 #define INCLUDE_POP3_CLIENT_H
 
+#include<inet/datatypes.h>
 
 #define POP3C_SENDERMAXLEN	30		/**< Maximum length for senders' e-mail
 									 *	 address including '\0'	

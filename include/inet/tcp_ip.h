@@ -638,23 +638,23 @@ UINT16 udp_getfreeport(void);
 INT16 process_tcp_in(struct ip_frame*, UINT16);
 INT16 process_tcp_out(INT8, UINT8*, UINT16, UINT16);
 INT8 tcp_init(void);
-INT8 tcp_listen(UINT8, UINT16);
+INT8 tcp_listen(INT8, UINT16);
 INT8 tcp_mapsocket(struct ip_frame*, struct tcp_frame*);
 UINT8 tcp_check_cs(struct ip_frame*, UINT16);
-void tcp_sendcontrol(UINT8);
+void tcp_sendcontrol(INT8);
 UINT32 tcp_initseq(void);
 void tcp_poll(void);
 void tcp_newstate(struct tcb*, UINT8);
 INT8 tcp_getsocket(UINT8, UINT8, UINT16, INT32 (*)(INT8, UINT8, UINT32, UINT32) );
 INT8 tcp_releasesocket(INT8);
-INT8 tcp_connect(UINT8, UINT32, UINT16, UINT16);
+INT8 tcp_connect(INT8, UINT32, UINT16, UINT16);
 INT16 tcp_send(INT8, UINT8*, UINT16, UINT16);
-INT8 tcp_close(UINT8);
+INT8 tcp_close(INT8);
 void tcp_sendreset(struct tcp_frame*, UINT32);
-INT8 tcp_getstate(UINT8);
+INT8 tcp_getstate(INT8);
 UINT16 tcp_getfreeport(void);
-INT16 tcp_checksend(UINT8);
-INT8 tcp_abort(UINT8);
+INT16 tcp_checksend(INT8);
+INT8 tcp_abort(INT8);
 
 
 

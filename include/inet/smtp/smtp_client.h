@@ -64,7 +64,7 @@
 #ifndef INCLUDE_SMTP_CLIENT_H
 #define INCLUDE_SMTP_CLIENT_H
 
- 
+#include<inet/datatypes.h> 
 
 /* SMTPC timeout		*/
 

@@ -115,7 +115,7 @@ Desc:			Calculates the length of given string
 
 INT16 strlen (UINT8* buf, UINT16 len)
 {
-	UINT8 i;
+	UINT16 i;
 	
 	for(i=0; i<len; i++) {
 		if(*buf == '\0')

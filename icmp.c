@@ -211,7 +211,7 @@ INT16 process_icmp_in (struct ip_frame* frame, UINT16 len)
 		
 		break;
 	
-		default:				/* Unregognized ICMP message	*/
+		default:				/* Unrecognized ICMP message	*/
 			
 			ICMP_DEBUGOUT("Unregognized ICMP message\n\r");
 			return(-1); 

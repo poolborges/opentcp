@@ -64,6 +64,7 @@
 #ifndef INCLUDE_IP_H
 #define INCLUDE_IP_H
 
+#include<inet/datatypes.h>
 #include<inet/ethernet.h>
 
 #define PHY_ADR_LEN			ETH_ADDRESS_LEN	/**<Lower-layer physical address length */

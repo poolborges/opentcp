@@ -67,7 +67,7 @@
  
 
 #include <inet/arch/mb90f553a/mb90550.h>
-#include <inet/datatypes.H>
+#include <inet/datatypes.h>
 #include <inet/timers.h>
 #include <inet/system.h>
 
@@ -131,7 +131,6 @@ void InitIrqLevels(void)
 __interrupt void DefaultIRQHandler(void);
 __interrupt void RLDTMR1IRQHandler(void);
 __interrupt void SYSTMRIRQHandler(void);
-__interrupt void ATReceiveIRQ(void);
 
 /*------------------------------------------------------------------------
    Vector definiton
@@ -173,7 +172,7 @@ __interrupt void ATReceiveIRQ(void);
 #pragma intvect DefaultIRQHandler 36    /* output compare CH.3          */
 #pragma intvect DefaultIRQHandler 37    /* UART (transmission complete) */
 #pragma intvect DefaultIRQHandler 38    /* IIC #0                       */
-#pragma intvect ATReceiveIRQ	  39    /* UART (receive complete)      */
+#pragma intvect DefaultIRQHandler 39    /* UART (receive complete)      */
 #pragma intvect DefaultIRQHandler 40    /* IIC #1                       */
 #pragma intvect DefaultIRQHandler 41    /* IRQ41-handler                */
 #pragma intvect DefaultIRQHandler 42    /* delayed interrupt            */

@@ -64,6 +64,7 @@
 #ifndef SYSTEM_H_INCLUDE
 #define SYSTEM_H_INCLUDE
 
+#include <inet/datatypes.h>
 #include <inet/globalvariables.h>
 /** \def OPENTCP_VERSION
  *	\brief OpenTCP major version number
