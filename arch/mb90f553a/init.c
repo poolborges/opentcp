@@ -197,7 +197,7 @@ void init (void)
 	SCR_AD = 0;
 	SCR_REC = 0;
 	
-	SSR_RIE = 1;			/* Enable RX Interrupt request			*/
+	SSR_RIE = 0;			/* Disable RX Interrupt request			*/
 	SSR_TIE = 0;			/* Disable TX Interrupt request			*/
 	
 	/* Kick WD	*/

@@ -65,7 +65,6 @@
  *	vector definitions.
  */
  
-#include "../../serialport.h"
 
 #include <inet/arch/mb90f553a/mb90550.h>
 #include <inet/datatypes.H>
@@ -73,8 +72,6 @@
 #include <inet/system.h>
 
 
-UINT32 i_temp;
-UINT8 i_ch;
 
 /*------------------------------------------------------------------------
    InitIrqLevels()
@@ -221,97 +218,3 @@ void SYSTMRIRQHandler (void)
 	
 	TBTC_TBOF = 0;							/* Clear interrupt request	*/
 }
-
-
-/* ATReceiveIRQ collects incoming UART1 data to cgATI_buffer
- * and sets Flag MSG_IN_RDY when message complete*/
-
-__interrupt void ATReceiveIRQ (void)
-{
-	struct SerialStatus* i_qstruct;
-	struct SerialSettings* i_sets;
-
-	i_qstruct = &SerialPort[0];
-	i_sets = &SerialPort_Settings[0];
-	
-	i_ch = SIDR;
-	
-	if( i_qstruct->State == RS_OPENED )
-	{
-		i_temp = 0;					/* We don't want to owerwrite	*/
-		
-		/* How many bytes there is still space	before overwriting	*/
-		
-		if (i_qstruct->WritePointer == i_qstruct->ReadPointer )
-		{
-			/* It's totally free	*/
-			i_temp = RXBUF_SIZE;
-		}
-		else if( i_qstruct->WritePointer > i_qstruct->ReadPointer )
-		{
-			i_temp = RXBUF_SIZE - ( i_qstruct->WritePointer - i_qstruct->ReadPointer );
-		}
-		else
-		{
-			i_temp = (i_qstruct->ReadPointer - i_qstruct->WritePointer);
-		}
-		
-		if( i_temp > 1 )
-		{
-			/* Save byte	*/
-			
-			i_qstruct->RxBuf[i_qstruct->WritePointer] = i_ch;	
-			
-			i_qstruct->WritePointer++;
-			
-			if(i_qstruct->WritePointer >= RXBUF_SIZE )
-				i_qstruct->WritePointer = 0;
-				
-			/* Halt if safety-space exceeded */
-			
-			if( (i_temp - 1) < (i_sets->HaltLimit) )
-			{
-				/* Halt it	*/
-				switch(i_sets->Handshake)
-				{
-					case SP_HANDSHAKE_NONE:
-		
-						i_qstruct->RxHalted = RS_RX_HALTED;
-		
-					break;
-		
-		
-					case SP_HANDSHAKE_HW:
-		
-						RS_HWHS_OUTPIN = TRUE;
-						i_qstruct->RxHalted = RS_RX_HALTED;			
-		
-					break;
-	
-	
-					case SP_HANDSHAKE_SW:
-		
-		
-					break;
-	
-					default:
-		
-						RS_HWHS_OUTPIN = TRUE;
-						i_qstruct->RxHalted = RS_RX_HALTED;
-			
-				}
-			}
-			else
-			{
-				/* InitTimer( qstruct->RxTimer, sets->RxTout ); */
-			}
-			
-			
-			
-		}
-		
-	
-	}
-	
-}
-

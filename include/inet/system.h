@@ -71,7 +71,7 @@
  *	This define represents OpenTCP version information. Version
  *	is in the format MAJOR.MINOR.PATCH.
  */
-#define OPENTCP_VERSION	"1.0.0"
+#define OPENTCP_VERSION	"1.0.1"
 
 /* Boolean	values*/
 #define TRUE  1	/**< Boolean TRUE value as used in the OpenTCP */

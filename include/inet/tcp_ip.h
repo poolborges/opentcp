@@ -161,9 +161,9 @@
 
 /** \def TCP_DEF_KEEPALIVE
  *	\ingroup opentcp_config
- *	\brief Defines a number of 1/100 secs after which an empty ACK packet is sent
+ *	\brief Defines a number of  seconds after which an empty ACK packet is sent
  *
- *	If for TCP_DEF_KEEPALIVE 1/100 seconds nothing is received/sent over the
+ *	If for TCP_DEF_KEEPALIVE seconds nothing is received/sent over the
  *	TCP connection (this includes received empty TCP packets) an empty
  *	(keep-alive) TCP packet will be sent to check if the other side is 
  *	still replying (and able to reply).
@@ -172,10 +172,10 @@
 
 /** \def TCP_DEF_RETRY_TOUT
  *	\ingroup opentcp_config
- *	\brief Default data-retransmission period (in 1/100 secs)
+ *	\brief Default data-retransmission period (in seconds)
  *
  *	If data was not acknowledged during the time-frame defined by this
- *	value (in 1/100 secs) retransmission procedure will occur.
+ *	value (in seconds) retransmission procedure will occur.
  */
 #define TCP_DEF_RETRY_TOUT	2
 

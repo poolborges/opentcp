@@ -1,2 +1,8 @@
 Recent changes:
-				
+
+25.01.2003
+	OpenTCP version 1.0.1
+	- some erorrs in documentation regarding TCP timeout values were fixed
+	- error in vectors.c where non-existing serial.h is included corrected
+	- Rx UART interrupt not enabled any more (init.c) and receive
+	  interrupt thrown out of vectors.c.
