@@ -623,10 +623,10 @@ INT16 process_udp_in(struct ip_frame* frame, UINT16 len)
 			
 			/* Do it firstly to IP pseudo header	*/
 	
-			checksum = ip_checksum(checksum, (UINT8)(localmachine.localip >> 24), (UINT8)i++);	
-			checksum = ip_checksum(checksum, (UINT8)(localmachine.localip >> 16), (UINT8)i++);
-			checksum = ip_checksum(checksum, (UINT8)(localmachine.localip >> 8), (UINT8)i++);
-			checksum = ip_checksum(checksum, (UINT8)localmachine.localip, (UINT8)i++);
+			checksum = ip_checksum(checksum, (UINT8)(frame->dip >> 24), (UINT8)i++);	
+			checksum = ip_checksum(checksum, (UINT8)(frame->dip >> 16), (UINT8)i++);
+			checksum = ip_checksum(checksum, (UINT8)(frame->dip >> 8), (UINT8)i++);
+			checksum = ip_checksum(checksum, (UINT8)frame->dip, (UINT8)i++);
 	
 			checksum = ip_checksum(checksum, (UINT8)(frame->sip >> 24), (UINT8)i++);	
 			checksum = ip_checksum(checksum, (UINT8)(frame->sip >> 16), (UINT8)i++);

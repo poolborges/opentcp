@@ -1,5 +1,26 @@
 Recent changes:
-
+23.05.2003
+	OpenTCP version 1.0.3
+	- DHCP client added to OpenTCP sources.
+	
+22.05.2003
+	- fixed bug in dns.c that prevents name lookups for hosts that
+		have anything but letters in their hostnames
+	- fixed possible #include dependency problem in globalvariables.h (
+		declaration of extern structs without knowing their exact
+		structure)
+	
+12.05.2003
+	- bug in dns.c that comes up with certain buggy C compilers fixed (
+		promoting implicitly 8-bit values only to 16-bit, not 32)
+	
+29.04.2003
+	- bug with incorred checksum calculation when receiving UDP broadcast
+	  fixed
+	  
+06.04.2003
+	- fixed a bug in arp_alloc
+	
 12.03.2003
 	OpenTCP version 1.0.2
 	- several include file dependency problems solved (everything?)

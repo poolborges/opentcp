@@ -67,6 +67,9 @@
 #define INCLUDE_GLOBALVARIABLES_H
 
 #include <inet/datatypes.h>
+#include <inet/ethernet.h>
+#include <inet/ip.h>
+#include <inet/tcp_ip.h>
 
 extern UINT8	NE2000NextPktPtr;			/* Start address of next packet */
 extern UINT8 	NE2000CurrPktPtr;			/* Start address of current packet */

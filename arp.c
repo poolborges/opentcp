@@ -475,7 +475,7 @@ INT8 arp_alloc (UINT8 type)
 
 	for( i=0; i<ARP_TSIZE; i++ ) {
 	
-		if( arp_table[aenext].state == ARP_FREE ) {
+		if( arp_table[i].state == ARP_FREE ) {
 			found=i;
 			break;
 		}

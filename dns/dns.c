@@ -113,7 +113,7 @@ void dns_init(void){
 
 	if(dns_socket == -1){
 		DEBUGOUT("DNS: No free UDP sockets!! \r\n");
-		RESET_SYSTEM();
+		return;
 	}
 
 	/* open socket */
@@ -360,9 +360,9 @@ INT32 dns_eventlistener(INT8 cbhandle, UINT8 event, UINT32 ipaddr, UINT16 port, 
 
 					if(tmp_int==0x0004){
 						/* great, read IP address*/
-						dns_tmp_ip=RECEIVE_NETWORK_B()<<24;
-						dns_tmp_ip+=RECEIVE_NETWORK_B()<<16;
-						dns_tmp_ip+=RECEIVE_NETWORK_B()<<8;
+						dns_tmp_ip=((UINT32)RECEIVE_NETWORK_B())<<24;
+						dns_tmp_ip+=((UINT32)RECEIVE_NETWORK_B())<<16;
+						dns_tmp_ip+=((UINT32)RECEIVE_NETWORK_B())<<8;
 						dns_tmp_ip+=RECEIVE_NETWORK_B();
 
 						/* we got some IP address. Is it what we asked for
@@ -505,7 +505,7 @@ UINT8 get_host_by_name(UINT8 *host_name_ptr, void (*listener)(UINT8 , UINT32 )){
 		buf_ptr++;
 		i=0;
 
-		while(IS_CHAR(*host_name_ptr)){
+		while(((*host_name_ptr)!='.')&&((*host_name_ptr)!='\0')){
 			i++;
 			*buf_ptr++=*host_name_ptr++;
 			if(buf_ptr==(net_buf+NETWORK_TX_BUFFER_SIZE)){

@@ -90,9 +90,9 @@
 /* Choose modules that will be debugged 
  * works only if ((DEBUG == 1)&&(xxx_DEBUG==1))
  */
-#define ETHERNET_DEBUG	1	/**< enable/disable Ethernet-level debug messages */
+#define ETHERNET_DEBUG	0	/**< enable/disable Ethernet-level debug messages */
 #define IP_DEBUG		0	/**< enable/disable IP-level debug messages */
-#define ICMP_DEBUG		1	/**< enable/disable ICMP-level debug messages */
+#define ICMP_DEBUG		0	/**< enable/disable ICMP-level debug messages */
 #define ARP_DEBUG		0	/**< enable/disable ARP-level debug messages */
 #define TCP_DEBUG		0	/**< enable/disable TCP-level debug messages */
 #define UDP_DEBUG		0	/**< enable/disable UDP-level debug messages */

@@ -157,6 +157,4 @@ void dns_run(void);
 
 INT32 dns_eventlistener(INT8 , UINT8 , UINT32 , UINT16 , UINT16 , UINT16);
 
-#define IS_CHAR(x) (((x)&0xdf)>='A')&&(((x)&0xdf)<='Z')
-
 #endif
