@@ -55,7 +55,7 @@
  *	\brief OpenTCP DHCP client implementation
  *	\author 
  *		\li Vladan Jovanovic (vladan.jovanovic@violasystems.com)
- *	\version 1.0
+ *	\version 1.03
  *	\date 23.5.2003
  *	\bug
  *	\warning
@@ -97,7 +97,7 @@ UINT8 dhcpc_timer_handle;
  *
  *	DHCP client's UDP socket handle
  */	
-UINT8 dhcpc_soc_handle;
+INT8 dhcpc_soc_handle;
 
 /** \brief Holds information if DHCP client is initialized
  *
@@ -185,6 +185,8 @@ INT8 dhcpc_init(void)
 	
 	dhcpc_initialized=1;
 	DEBUGOUT("DHCP Client initialized\r\n");
+	
+	return (0);
 }
 
 /** \brief DHCP client main state machine

@@ -544,7 +544,7 @@ void InitTransmission (UINT8 page)
  	
  	/* Set Address lines to be ready	*/
  	
- 	DATADIR = 0xFF;				/* datapins = output */
+ 	DATADIR = DDR_OUT;				/* datapins = output */
  	ADRBUS =  (IOPORT | 0x60);	/* dont change R,W,Reset pins */
  		
  	
@@ -658,7 +658,7 @@ void NE2000DMAInit_position (UINT16 pos)
 	
 	/* Init Address bus	*/
 
- 	DATADIR = 0x00;				/* port input */
+ 	DATADIR = DDR_IN;				/* port input */
  	ADRBUS = (IOPORT | 0x60);
  	
  	/* Now just read by inNE2000again()		*/

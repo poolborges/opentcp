@@ -88,8 +88,8 @@ void InitIrqLevels(void)
 {
 /*  ICRxx               shared IRQs for ICR */
 
-    ICR00 = 7;      /*  IRQ11
-                        IRQ12 */
+    ICR00 = 4;      /*  IRQ11
+                        IRQ12 Time-base timer */
     ICR01 = 7;      /*  IRQ13     
                         IRQ14 */
     ICR02 = 7;      /*  IRQ15
@@ -112,7 +112,7 @@ void InitIrqLevels(void)
                         IRQ32 */
     ICR11 = 7;      /*  IRQ33
                         IRQ34 */
-    ICR12 = 2;      /*  IRQ35	Time-base timer
+    ICR12 = 7;      /*  IRQ35
                         IRQ36 */
     ICR13 = 7;      /*  IRQ37
                         IRQ38 */

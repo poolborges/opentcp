@@ -479,6 +479,37 @@ void https_activatesession (UINT8 ses)
 
 }
 
+/* read two encoded bytes from HTTP URI and return
+ * decoded byte
+ */
+UINT8 https_read_encoded(void)
+{
+	UINT8 temp,ch;
+	
+	temp = RECEIVE_NETWORK_B();
+	if((temp>='0')&&(temp<='9')){
+		ch = (temp-'0')<<4;
+	}else{
+		if((temp>='a')&&(temp<='f')){
+			ch = (temp-'a'+10)<<4;
+		}else{
+			ch = (temp-'A'+10)<<4;
+		}
+	}
+		
+	temp = RECEIVE_NETWORK_B();
+	if((temp>='0')&&(temp<='9')){
+		ch |= (temp-'0');
+	}else{
+		if((temp>='a')&&(temp<='f')){
+			ch |= (temp-'a'+10);
+		}else{
+			ch |= (temp-'A'+10);
+		}
+	}
+	return ch;
+}
+
 INT16 https_calculatehash (UINT32 len)
 {
 	UINT8 hash=0;
@@ -498,6 +529,21 @@ INT16 https_calculatehash (UINT32 len)
 		if( ch ==' ')	/* End reached? 		*/
 			break;
 		
+		/* encoded HTTP URI ? */
+		if( ch == '%'){
+			ch = https_read_encoded();
+
+			/* is this UNICODE char encoded? (for now allow only
+			 * one byte encoded UNICODE chars)
+			 */
+			if( ( ch & 0xe0 ) == 0xc0){
+				/* yes */
+				ch = ( ch & 0x1F ) << 6; 
+				RECEIVE_NETWORK_B();	/* skip first % */
+				ch |= (https_read_encoded() & 0x3F);
+			}
+		}
+
 		hash *= 37;
 		hash += ch;
 	

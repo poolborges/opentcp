@@ -1,4 +1,17 @@
 Recent changes:
+16.06.2003
+	- fixed Ethernet.c so that data direction registers are not set
+	up with #defines but with literasls.
+11.06.2003
+	- fixed all possible problems with shifting (dns.c, ip.c)
+	- fixed some flaws in DHCP client 
+	
+06.06.2003
+	- fixed problem with wrong ICCxx register for Timebase-timer in
+	vectors.c
+	- improved HTTP URI parsing (decoding of % HEX HEX added and simple
+	UNICODE characters decoding - not complete though )
+	
 23.05.2003
 	OpenTCP version 1.0.3
 	- DHCP client added to OpenTCP sources.

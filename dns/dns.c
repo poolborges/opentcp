@@ -269,7 +269,7 @@ INT32 dns_eventlistener(INT8 cbhandle, UINT8 event, UINT32 ipaddr, UINT16 port, 
 			}
 
 			/* question count == 1 ? */
-			tmp_int=(RECEIVE_NETWORK_B()<<8);
+			tmp_int=(((UINT16)RECEIVE_NETWORK_B())<<8);
 			tmp_int+=RECEIVE_NETWORK_B();
 			if(tmp_int != 1){
 				DEBUGOUT("DNS: we only sent one question and received a couple of answers!!\r\n");
@@ -277,10 +277,10 @@ INT32 dns_eventlistener(INT8 cbhandle, UINT8 event, UINT32 ipaddr, UINT16 port, 
 				return (-1);
 			}
 
-			dns_ancount=(RECEIVE_NETWORK_B()<<8);
+			dns_ancount=(((UINT16)RECEIVE_NETWORK_B())<<8);
 			dns_ancount+=RECEIVE_NETWORK_B();
 
-			dns_nscount=(RECEIVE_NETWORK_B()<<8);
+			dns_nscount=(((UINT16)RECEIVE_NETWORK_B())<<8);
 			dns_nscount+=RECEIVE_NETWORK_B();
 
 			/* skip ARCOUNT */
@@ -315,10 +315,10 @@ INT32 dns_eventlistener(INT8 cbhandle, UINT8 event, UINT32 ipaddr, UINT16 port, 
 
 
 			/* qtype and qclass */
-			tmp_int=(RECEIVE_NETWORK_B()<<8);
+			tmp_int=(((UINT16)RECEIVE_NETWORK_B())<<8);
 			tmp_int+=RECEIVE_NETWORK_B();
 
-			tmp_int|=(RECEIVE_NETWORK_B()<<8);
+			tmp_int|=((UINT16)(RECEIVE_NETWORK_B())<<8);
 			tmp_int|=RECEIVE_NETWORK_B();
 
 			if(tmp_int!=0x0001){
@@ -343,11 +343,11 @@ INT32 dns_eventlistener(INT8 cbhandle, UINT8 event, UINT32 ipaddr, UINT16 port, 
 					RECEIVE_NETWORK_B();
 
 				/* TYPE */
-				tmp_int=RECEIVE_NETWORK_B()<<8;
+				tmp_int=((UINT16)RECEIVE_NETWORK_B())<<8;
 				tmp_int|=RECEIVE_NETWORK_B();
 
 				/* CLASS */
-				tmp_int|=(RECEIVE_NETWORK_B()<<8);
+				tmp_int|=(((UINT16)RECEIVE_NETWORK_B())<<8);
 				tmp_int|=RECEIVE_NETWORK_B();
 
 				/* CLASS==INET and TYPE=A ? */

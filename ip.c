@@ -154,7 +154,7 @@ INT16 process_ip_in (struct ethernet_frame* frame)
 	received_ip_packet.tlen = ((UINT16)RECEIVE_NETWORK_B()) << 8;
 	received_ip_packet.tlen |= RECEIVE_NETWORK_B();
 		
-	received_ip_packet.id = RECEIVE_NETWORK_B() << 8;
+	received_ip_packet.id = ((UINT16)RECEIVE_NETWORK_B()) << 8;
 	received_ip_packet.id |= RECEIVE_NETWORK_B();
 		
 	received_ip_packet.frags = ((UINT16)RECEIVE_NETWORK_B()) << 8;
